@@ -1,11 +1,10 @@
 Package: ULV
 Type: Package
-Title: ULV: a hybrid method for differential expression analysis using rank-based method and mixed-effect model
+Title: ULV: a robust statistical method for clustered data, with applications to multi-subject single-cell RNA sequencing data
 Version: 0.1.0
 Author: Mingyu Du
 Maintainer: Mingyu Du <mingyd1@uci.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: U-statistic based Latant Variable model that takes advantage of the robustness of rank-based methods and the statistical efficiency of parametric methods for small sample sizes.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

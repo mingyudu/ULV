@@ -1,4 +1,4 @@
-#' ULV: a hybrid method for differential expression analysis using rank-base method and mixed-effect model
+#' ULV: U-statistic based Latant Variable model that takes advantage of the robustness of rank-based methods and the statistical efficiency of parametric methods for small sample sizes
 #'
 #' @param count count matrix
 #' @param meta a data frame of meta information
@@ -18,9 +18,10 @@
 #' library(ULV)
 #' data('example_data')
 #' count = example_data$count_matrix
+#' count = count[1:10,]
 #' meta = example_data$metadata
 #'
-#' res_table = ULV(count, meta, normalize=TRUE, subject_name = 'donor', cond_name = 'group_per_sample', ctrl_cond = 'mild', case_cond = 'severe', weighted = FALSE, covariate_name_list=NULL)
+#' res_table = ULV(count, meta, normalize=TRUE, subject_name = 'donor', cond_name = 'group_per_sample', ctrl_cond = 'mild', case_cond = 'severe', weighted = TRUE, covariate_name_list=c('age_yr','sex'))
 
 ULV <- function(count, meta, normalize=TRUE,
                     subject_name, cond_name,
@@ -120,7 +121,7 @@ ULV <- function(count, meta, normalize=TRUE,
     }
 
     covariate_name_list_new = colnames(d.latent)[!colnames(d.latent) %in% c('d', 'id_case', 'id_ctrl')]
-    print(covariate_name_list_new)
+    # print(covariate_name_list_new)
 
     #-----------------------------------------------
     # weighted by cell number of each subject
