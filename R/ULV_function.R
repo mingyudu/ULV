@@ -121,7 +121,6 @@ ULV <- function(count, meta, normalize=TRUE,
     }
 
     covariate_name_list_new = colnames(d.latent)[!colnames(d.latent) %in% c('d', 'id_case', 'id_ctrl')]
-    # print(covariate_name_list_new)
 
     #-----------------------------------------------
     # weighted by cell number of each subject
