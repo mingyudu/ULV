@@ -1,0 +1,20 @@
+Package: ULV
+Type: Package
+Title: ULV: a hybrid method for differential expression analysis using rank-based method and mixed-effect model
+Version: 0.1.0
+Author: Mingyu Du
+Maintainer: Mingyu Du <mingyd1@uci.edu>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+Imports:
+    lme4,
+    lmerTest,
+    DESeq2, 
+    scran, 
+    plyr
+Depends:
+    R (>= 2.10)
