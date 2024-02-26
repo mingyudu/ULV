@@ -4,7 +4,7 @@
 ULV is a two-stage robust statistical framework that incorporates U statistic with a latent variable model for the purpose of comparing the difference of clustered data. 
 In the first stage, ULV utilizes a nonparametric rank-based method to calculate the between-subject difference between individuals from distinct groups. 
 In the second stage, ULV postulates a latent level for each subject via a parametric model. 
-The analysis will benefit from ULV because the rank-based method in the first stage is robust to non-normal distribution of data, while the latent variable model in the second stage account for correlations in the between-subject difference, thereby characterize the data dependence caused by clustering.
+The analysis will benefit from ULV because the rank-based method in the first stage is robust to non-normal distribution of data, while the latent variable model in the second stage accounts for correlations in the between-subject difference, thereby characterize the data dependence caused by clustering.
 
 ## Installation
 
