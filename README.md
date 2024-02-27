@@ -21,7 +21,6 @@ This is a basic example which shows you how to apply ULV to a single-cell RNA-se
 library(ULV)
 data('example_data')
 count = example_data$count_matrix
-count = count[1:10,]
 meta = example_data$metadata
 
 res_table = ULV(count, meta, normalize=TRUE, 
