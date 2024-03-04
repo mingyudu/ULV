@@ -187,11 +187,29 @@ ULV <- function(count, meta, normalize=TRUE,
       }
     }
 
-    res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
-                         pval = summary(model_fit)$coefficients[1,5]))
-    if('try-error' %in% class(res)){
-      message('An error occurred during model fitting for gene ', gene_names[g])
-      res = data.frame(PI = NA)
+    ## check if there is any error or convergence issue in model fitting
+    if('try-error' %in% class(model_fit)){
+      message('feature ', g, ': an error occurred during model fitting!')
+      res = data.frame(PI = NA,
+                       PI.SE = NA,
+                       conv_info = 'fitting_error',
+                       pval = NA)
+    }else{
+      w = try(model_fit@optinfo$conv$lme4$messages)
+      conv_info = try(is.null(w))
+      if(conv_info){
+        res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
+                             PI.SE = summary(model_fit)$coefficients[1,2],
+                             conv_info = 'converge',
+                             pval = summary(model_fit)$coefficients[1,5]))
+      }else{
+        message('feature ', g, ': model fitting did not converged!')
+        print(w)
+        res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
+                             PI.SE = summary(model_fit)$coefficients[1,2],
+                             conv_info = 'not_converge',
+                             pval = summary(model_fit)$coefficients[1,5]))
+      }
     }
     res
   }))
