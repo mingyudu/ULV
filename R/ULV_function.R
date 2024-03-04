@@ -189,14 +189,17 @@ ULV <- function(count, meta, normalize=TRUE,
 
     ## check if there is any error or convergence issue in model fitting
     if('try-error' %in% class(model_fit)){
+
       message('feature ', g, ': an error occurred during model fitting!')
       res = data.frame(PI = NA,
                        PI.SE = NA,
                        conv_info = 'fitting_error',
                        pval = NA)
     }else{
+
       w = try(model_fit@optinfo$conv$lme4$messages)
       conv_info = try(is.null(w))
+
       if(conv_info){
         res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
                              PI.SE = summary(model_fit)$coefficients[1,2],
