@@ -105,7 +105,7 @@ ULV <- function(count, meta, normalize=TRUE,
           diff = covarDiff(meta=meta, subject_name=subject_name,
                            covariate_name=covariate_name_list[c],
                            ctrl_subjs = ctrl_subjs, case_subjs = case_subjs,
-                           id_ctrl = d.latent$id_ctrl, id_case = d.latent$id_case, scale=20) # scale?
+                           id_ctrl = d.latent$id_ctrl, id_case = d.latent$id_case, scale=1)
           d.latent[,paste0(covariate_name_list[c],'_diff')] = diff
         } else if (class(meta[,covariate_name_list[c]])=='character'){
           diff = covarDiffDummy(meta=meta, subject_name=subject_name,

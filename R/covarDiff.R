@@ -15,7 +15,7 @@
 #' @examples
 covarDiff <- function(meta, subject_name, covariate_name,
                       ctrl_subjs, case_subjs,
-                      id_ctrl, id_case, scale=NULL){
+                      id_ctrl, id_case, scale=1){
 
   subj_info = unique(meta[,c(subject_name, covariate_name)])
   rownames(subj_info) = subj_info[,subject_name]
