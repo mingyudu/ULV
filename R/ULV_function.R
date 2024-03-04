@@ -43,14 +43,31 @@ ULV <- function(count, meta, normalize=TRUE,
   # extract condition and subject information
   #-------------------------------------------------
 
+  ## only select the cells within the case or control condition group
+  ind = which(meta[, cond_name] %in% c(case_cond, ctrl_cond))
+  count = count[,ind]
+  meta = meta[ind,]
+
   condition = meta[, cond_name]
   subject = meta[, subject_name]
 
   table = table(subject, condition)
+
+  ## if there is no sample in either group, return 0
+  if(!(ctrl_cond %in% colnames(table)) | !(case_cond %in% colnames(table))){
+    message('At least in one condition we do not have any subject!')
+    return(0)
+  }
+
   ctrl_subjs = rownames(table)[table[,ctrl_cond]!=0]
   case_subjs = rownames(table)[table[,case_cond]!=0]
-  ind_fct = factor(subject, levels = c(ctrl_subjs, case_subjs))
   n0 = length(ctrl_subjs); n1 = length(case_subjs)
+  ## if there is only 1 sample in either group, return 0
+  if(n0==1 | n1==1){
+    message('At least in one condition we only have one subject!')
+    return(0)
+  }
+  ind_fct = factor(subject, levels = c(ctrl_subjs, case_subjs))
 
   #--------------------------------------------------
   # check covariate information
@@ -71,7 +88,7 @@ ULV <- function(count, meta, normalize=TRUE,
 
   res_table = Reduce(plyr::rbind.fill, lapply(1:ngene, function(g){
 
-    message('gene ', g)
+    # message('gene ', g)
     y = as.numeric(count[g,])
     y.split = split(y, ind_fct)
 
@@ -87,6 +104,8 @@ ULV <- function(count, meta, normalize=TRUE,
           length(unlist(y.split[i]))/length(unlist(y.split[j]))
       }
     }
+    rownames(d_mat) = names(y.split)[(n0+1):(n0+n1)]
+    colnames(d_mat) = names(y.split)[1:n0]
     d = matrix(t(d_mat), n1*n0, 1)
     d = d - 0.5
 
@@ -183,7 +202,7 @@ ULV <- function(count, meta, normalize=TRUE,
 
   res_table$padj = p.adjust(res_table$pval, 'BH')
   rownames(res_table) = gene_names
-  res_table = res_table[which(!is.na(res_table[,1])),]
+  # res_table = res_table[which(!is.na(res_table[,1])),]
 
   return(res_table)
 }
