@@ -69,8 +69,8 @@ plot_volcano <- function(res_table, alpha = 0.1, PI_thres = 0.05,
 
   # Add threshold lines
   fig = fig +
-    geom_hline(yintercept = -log10(alpha), linetype = "dashed", size = 0.3) +
-    geom_vline(xintercept = c(-PI_thres + 0.5, PI_thres + 0.5), linetype = "dashed", size = 0.3) +
+    geom_hline(yintercept = -log10(alpha), linetype = "dashed", linewidth = 0.3) +
+    geom_vline(xintercept = c(-PI_thres + 0.5, PI_thres + 0.5), linetype = "dashed", linewidth = 0.3) +
     theme(legend.position = 'none')
 
   # Add text labels for significant features
