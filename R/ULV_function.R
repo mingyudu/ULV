@@ -1,16 +1,25 @@
-#' ULV: U-statistic based Latant Variable model that takes advantage of the robustness of rank-based methods and the statistical efficiency of parametric methods for small sample sizes
+#' Fit ULV model
 #'
-#' @param count count matrix
-#' @param meta a data frame of meta information
-#' @param normalize_option a character value to show the normalization method to apply to the count matrix
-#' @param subject_name a character for subject name in meta
-#' @param cond_name a character for condition name in meta
-#' @param ctrl_cond a character for control name
-#' @param case_cond a character for case name
-#' @param weighted a binary variable indicating whether the analysis is weighted by varying cluster sizes
-#' @param covariate_name_list a vector of character of covariate names. If not, set it to NULL
+#' \code{fit_ULV} fits a U-statistic based Latant Variable model that takes
+#' advantage of the robustness of rank-based methods and the statistical
+#' efficiency of parametric methods for small sample sizes.
 #'
-#' @return a result table summarizing the probabilistic index and p-value of each gene
+#' @param count count matrix.
+#' @param meta a data frame of meta information.
+#' @param normalize_option a character value to show the normalization method to
+#'  apply to the count matrix.
+#' @param subject_name a character for subject name in \code{meta}.
+#' @param cond_name a character for condition name in \code{meta}.
+#' @param ctrl_cond a character for control name.
+#' @param case_cond a character for case name.
+#' @param weighted a binary variable indicating whether the analysis is
+#'  weighted by varying cluster sizes.
+#' @param covariate_name_list a vector of character of covariate names.
+#'  If not, set it to NULL. The names must be included in the columns
+#'  of \code{meta}.
+#'
+#' @return a result table summarizing the probabilistic index and p-value
+#'  of each gene.
 #' @import lme4 lmerTest plyr
 #' @export
 #'
@@ -21,12 +30,12 @@
 #' count = count[1:10,]
 #' meta = example_data$metadata
 #'
-#' res_table = ULV(count, meta, normalize_option='pooling', subject_name = 'donor',
+#' res_table = fit_ULV(count, meta, normalize_option='pooling', subject_name = 'donor',
 #'                 cond_name = 'group_per_sample', ctrl_cond = 'mild',
 #'                 case_cond = 'severe', weighted = TRUE,
 #'                 covariate_name_list=c('age_yr','sex'))
 
-ULV <- function(count, meta, normalize_option='none',
+fit_ULV <- function(count, meta, normalize_option='none',
                     subject_name, cond_name,
                     ctrl_cond, case_cond,
                     weighted = FALSE,
