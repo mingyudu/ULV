@@ -46,7 +46,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
   #-------------------------------------------------
 
   if(normalize_option %in% c('pooling', 'clr')){
-    message('Normalize the input count matrix using ', normalize_option)
+    message('Normalizing the input count matrix using ', normalize_option)
     count = normalize(count, meta, option = normalize_option)
   }else if (normalize_option == 'none'){
     message('Use the input count matrix directly. No normalization was utilized.')
@@ -104,9 +104,12 @@ fit_ULV <- function(count, meta, normalize_option='none',
   # ULV analysis
   #---------------------------------------------------
 
+  message('Fitting ULV model')
   res_table = Reduce(plyr::rbind.fill, lapply(1:ngene, function(g){
 
-    # message('gene ', g)
+    if(g %% 100 == 0){
+      message('Finished model fitting for feature ', g, '/', ngene)
+    }
     y = as.numeric(count[g,])
     y.split = split(y, ind_fct)
 
@@ -252,6 +255,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
   res_table$padj = p.adjust(res_table$pval, 'BH')
   rownames(res_table) = gene_names
   # res_table = res_table[which(!is.na(res_table[,1])),]
+  message('Result table for ULV models created')
 
   return(res_table)
 }
