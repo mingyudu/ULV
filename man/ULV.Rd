@@ -2,12 +2,12 @@
 % Please edit documentation in R/ULV_function.R
 \name{ULV}
 \alias{ULV}
-\title{ULV: a hybrid method for differential expression analysis using rank-base method and mixed-effect model}
+\title{ULV: U-statistic based Latant Variable model that takes advantage of the robustness of rank-based methods and the statistical efficiency of parametric methods for small sample sizes}
 \usage{
 ULV(
   count,
   meta,
-  normalize = TRUE,
+  normalize_option = "none",
   subject_name,
   cond_name,
   ctrl_cond,
@@ -21,7 +21,7 @@ ULV(
 
 \item{meta}{a data frame of meta information}
 
-\item{normalize}{if TRUE, then conduct the normalization during ULV.}
+\item{normalize_option}{a character value to show the normalization method to apply to the count matrix}
 
 \item{subject_name}{a character for subject name in meta}
 
@@ -39,5 +39,17 @@ ULV(
 a result table summarizing the probabilistic index and p-value of each gene
 }
 \description{
-ULV: a hybrid method for differential expression analysis using rank-base method and mixed-effect model
+ULV: U-statistic based Latant Variable model that takes advantage of the robustness of rank-based methods and the statistical efficiency of parametric methods for small sample sizes
+}
+\examples{
+library(ULV)
+data('example_data')
+count = example_data$count_matrix
+count = count[1:10,]
+meta = example_data$metadata
+
+res_table = ULV(count, meta, normalize_option='pooling', subject_name = 'donor',
+                cond_name = 'group_per_sample', ctrl_cond = 'mild',
+                case_cond = 'severe', weighted = TRUE,
+                covariate_name_list=c('age_yr','sex'))
 }

@@ -4,12 +4,14 @@
 \alias{normalize}
 \title{Normalize the single-cell count matrix}
 \usage{
-normalize(count, meta)
+normalize(count, meta, option = "none")
 }
 \arguments{
 \item{count}{raw count matrix}
 
 \item{meta}{meta information}
+
+\item{option}{a character value representing the normalization method to apply to the count matrix}
 }
 \value{
 normalized count matrix

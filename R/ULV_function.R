@@ -2,7 +2,7 @@
 #'
 #' @param count count matrix
 #' @param meta a data frame of meta information
-#' @param normalize if TRUE, then conduct the normalization during ULV.
+#' @param normalize_option a character value to show the normalization method to apply to the count matrix
 #' @param subject_name a character for subject name in meta
 #' @param cond_name a character for condition name in meta
 #' @param ctrl_cond a character for control name
@@ -21,9 +21,12 @@
 #' count = count[1:10,]
 #' meta = example_data$metadata
 #'
-#' res_table = ULV(count, meta, normalize=TRUE, subject_name = 'donor', cond_name = 'group_per_sample', ctrl_cond = 'mild', case_cond = 'severe', weighted = TRUE, covariate_name_list=c('age_yr','sex'))
+#' res_table = ULV(count, meta, normalize_option='pooling', subject_name = 'donor',
+#'                 cond_name = 'group_per_sample', ctrl_cond = 'mild',
+#'                 case_cond = 'severe', weighted = TRUE,
+#'                 covariate_name_list=c('age_yr','sex'))
 
-ULV <- function(count, meta, normalize=TRUE,
+ULV <- function(count, meta, normalize_option='none',
                     subject_name, cond_name,
                     ctrl_cond, case_cond,
                     weighted = FALSE,
@@ -33,8 +36,10 @@ ULV <- function(count, meta, normalize=TRUE,
   # preprocessing
   #-------------------------------------------------
 
-  if(normalize){
-    count = normalize(count, meta)
+  if(normalize_option %in% c('pooling', 'clr', 'none')){
+    count = normalize(count, meta, option = normalize_option)
+  }else {
+    stop('The normalizatio option argument must be one of the following options: pooling, clr, or none.')
   }
   gene_names = rownames(count)
   ngene = nrow(count)
@@ -193,6 +198,8 @@ ULV <- function(count, meta, normalize=TRUE,
       message('feature ', g, ': an error occurred during model fitting!')
       res = data.frame(PI = NA,
                        PI.SE = NA,
+                       vcov.case = NA,
+                       vcov.ctrl = NA,
                        conv_info = 'fitting_error',
                        pval = NA)
     }else{
@@ -200,9 +207,15 @@ ULV <- function(count, meta, normalize=TRUE,
       w = try(model_fit@optinfo$conv$lme4$messages)
       conv_info = try(is.null(w))
 
+      df = as.data.frame(VarCorr(model_fit))
+      vcov1 = df[df$grp=='id_case','vcov']
+      vcov2 = df[df$grp=='id_ctrl','vcov']
+
       if(conv_info){
         res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
                              PI.SE = summary(model_fit)$coefficients[1,2],
+                             vcov.case = vcov1,
+                             vcov.ctrl = vcov2,
                              conv_info = 'converge',
                              pval = summary(model_fit)$coefficients[1,5]))
       }else{
@@ -210,6 +223,8 @@ ULV <- function(count, meta, normalize=TRUE,
         print(w)
         res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
                              PI.SE = summary(model_fit)$coefficients[1,2],
+                             vcov.case = vcov1,
+                             vcov.ctrl = vcov2,
                              conv_info = 'not_converge',
                              pval = summary(model_fit)$coefficients[1,5]))
       }

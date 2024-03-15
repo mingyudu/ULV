@@ -12,7 +12,7 @@ covarDiff(
   case_subjs,
   id_ctrl,
   id_case,
-  scale = NULL
+  scale = 1
 )
 }
 \arguments{
