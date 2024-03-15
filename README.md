@@ -10,8 +10,9 @@ The analysis will benefit from ULV because the rank-based method in the first st
 
 You can install the current version of ULV from GitHub with:
 ```r
-library(devtools)
-install_github("mingyudu/ULV")
+if (!require("devtools", quietly = TRUE))
+    install.packages("devtools")
+devtools::install_github("mingyudu/ULV")
 ```
 
 ## Example
