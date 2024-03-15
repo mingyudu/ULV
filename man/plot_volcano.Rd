@@ -60,5 +60,4 @@ res_table = fit_ULV(count, meta, normalize_option='pooling', subject_name = 'don
                     case_cond = 'severe', weighted = TRUE,
                     covariate_name_list=c('age_yr','sex'))
 plot_volcano(res_table)
-
 }
