@@ -45,7 +45,11 @@ fit_ULV <- function(count, meta, normalize_option='none',
   # preprocessing
   #-------------------------------------------------
 
-  if(normalize_option %in% c('pooling', 'clr', 'none')){
+  if(normalize_option %in% c('pooling', 'clr')){
+    message('Normalize the input count matrix using ', normalize_option)
+    count = normalize(count, meta, option = normalize_option)
+  }else if (normalize_option == 'none'){
+    message('Use the input count matrix directly. No normalization was utilized.')
     count = normalize(count, meta, option = normalize_option)
   }else {
     stop('The normalizatio option argument must be one of the following options: pooling, clr, or none.')
