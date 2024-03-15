@@ -37,17 +37,19 @@
 #'                     case_cond = 'severe', weighted = TRUE,
 #'                     covariate_name_list=c('age_yr','sex'))
 #' plot_volcano(res_table)
-#'
 plot_volcano <- function(res_table, alpha = 0.1, PI_thres = 0.05,
                          title = 'Volcano Plot', xlab = 'Estimated probabilistic index',
                          ylab = '-log10(adjusted p-value)',
                          add_labels = TRUE, max.overlaps = 15){
 
-  if(is.null(res_table)){
+  if(is.null(rownames(res_table))){
     stop('The input table for volcano plotting is not valid. It should have row names representing the features (genes, proteins, etc.).')
   }
   res_table$name = rownames(res_table)
 
+  if (!all(c('padj', 'PI') %in% colnames(res_table))){
+    stop('The column names of res_table should include padj and PI.')
+  }
   # subset significant features
   significant_features = subset(res_table, padj < alpha & abs(PI - 0.5) > PI_thres)
 
