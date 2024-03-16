@@ -59,9 +59,9 @@ plot_volcano <- function(res_table, alpha = 0.1, PI_thres = 0.05,
     mutate(significant = ifelse(padj < alpha & abs(PI - 0.5) > PI_thres,
                                 'Sig', 'Not Sig')) %>%
     ggplot(aes(x = PI, y = -log10(padj))) +
-    geom_point(aes(color = significant, size = significant, alpha = 0.5)) +
+    geom_point(aes(color = significant, size = significant, alpha = 0.5), shape = 1) +
     scale_color_manual(values = c('#56B4E9', 'red')) +
-    scale_size_manual(values = c(0.5, 0.6)) +
+    scale_size_manual(values = c(0.5, 1.5)) +
     ggtitle(title) +
     xlab(xlab) +
     ylab(ylab) +
