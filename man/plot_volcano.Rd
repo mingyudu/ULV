@@ -41,7 +41,7 @@ features on the plot.}
 Set to 'Inf' to always display all labels.}
 }
 \value{
-A ggplot2 figure.
+A \code{\link{ggplot2}} object.
 }
 \description{
 \code{plot_volcano} create volcano plots. This function takes the ULV

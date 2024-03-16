@@ -22,7 +22,7 @@
 #'  Set to 'Inf' to always display all labels.
 #' @import dplyr ggplot2 ggrepel
 #'
-#' @return A ggplot2 figure.
+#' @return A \code{\link{ggplot2}} object.
 #' @export
 #'
 #' @examples
