@@ -85,7 +85,9 @@ plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
     axis = element_blank()
   }
 
-  # create boxplots to show distribution of feature from multiple subjects
+  #-------------------
+  # create boxplots
+  #-------------------
   if(is.null(y_range)){
     fig <-df %>%
             ggplot(aes(x = subj_ids, y = y, color = cond_ids)) +
