@@ -212,12 +212,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
     if('try-error' %in% class(model_fit)){
 
       message('feature ', g, ': an error occurred during model fitting!')
-      res = data.frame(PI = NA,
-                       PI.SE = NA,
-                       vcov.case = NA,
-                       vcov.ctrl = NA,
-                       conv_info = 'fitting_error',
-                       pval = NA)
+      res = data.frame(conv_info = 'fitting_error')
     }else{
 
       w = try(model_fit@optinfo$conv$lme4$messages)
@@ -243,6 +238,15 @@ fit_ULV <- function(count, meta, normalize_option='none',
                              vcov.ctrl = vcov2,
                              conv_info = 'not_converge',
                              pval = summary(model_fit)$coefficients[1,5]))
+      }
+      # include covariate coefficient in output
+      n_coeff = dim(summary(model_fit)$coefficients)[1]
+      if(n_coeff>1){
+        res_covar = as.data.frame(t(summary(model_fit)$coefficients[2:n_coeff,1]))
+        colnames(res_covar) = rownames(summary(model_fit)$coefficients)[2:n_coeff]
+        res_covar_pval = as.data.frame(t(summary(model_fit)$coefficients[2:n_coeff,5]))
+        colnames(res_covar_pval) = paste0(rownames(summary(model_fit)$coefficients)[2:n_coeff], '_pval')
+        res = cbind(res, res_covar, res_covar_pval)
       }
     }
     res
