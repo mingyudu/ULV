@@ -10,21 +10,25 @@
 #' @param feature a character for the feature to plot.
 #' @param covar_name a character for covariate name in \code{meta}.
 #' @param sub_cond a vector of conditions to plot.
-#' @param show_subj whether or not to show the subject ID on x-axis.
-#' @param xlab text label on x-axis of the both plots.
-#' @param ylab text label on y-axis of the boxplot for feature.
-#' @param title title of the plot. Set to \code{feature} if not specified.
+#' @param xlab.p1 text label on x-axis of the first plot.
+#' @param ylab.p1 text label on y-axis of the first plot.
+#' @param title.p1 title of the first plot. Set to \code{feature} if not specified.
+#' @param xlab.p2 text label on x-axis of the second plot.
+#' @param ylab.p2 text label on y-axis of the second plot.
+#' @param title.p2 title of the second plot.
 #'
 #' @return A \code{\link{ggplot2} object.
 #' @import ggplot2 stringr patchwork
 #' @export
 #'
 #' @examples
-plot_dist_by_covar <- function(count, meta, res_table = NULL, normalize_option = 'pooling',
+plot_dist_by_covar <- function(count, meta, res_table = NULL,
+                               normalize_option = 'pooling',
                                cond_name, subj_name, feature, covar_name,
-                               sub_cond = NULL, show_subj = FALSE,
-                               xlab = covar_name, ylab = NULL,
-                               title = feature){
+                               sub_cond = NULL, xlab.p1 = covar_name, ylab.p1 = NULL,
+                               title.p1 = feature,
+                               xlab.p2 = covar_name, ylab.p2 = 'Subject-level metric',
+                               title.p2 = 'Subject-level metric'){
 
   if(is.null(rownames(count))){
     stop('The count input should have rownames.')
@@ -40,14 +44,14 @@ plot_dist_by_covar <- function(count, meta, res_table = NULL, normalize_option =
   if(normalize_option %in% c('pooling', 'clr')){
     message('Normalizing the input count matrix using ', normalize_option)
     count = normalize(count, meta, option = normalize_option)
-    if(is.null(ylab)){
-      ylab = 'Normalized expression'
+    if(is.null(ylab.p1)){
+      ylab.p1 = 'Normalized expression'
     }
   }else if (normalize_option == 'none'){
     message('Use the input count matrix directly. No normalization was utilized.')
     count = normalize(count, meta, option = normalize_option)
-    if(is.null(ylab)){
-      ylab = 'Expression'
+    if(is.null(ylab.p1)){
+      ylab.p1 = 'Expression'
     }
   }else {
     stop('The normalizatio option argument must be one of the following options: pooling, clr, or none.')
@@ -86,20 +90,20 @@ plot_dist_by_covar <- function(count, meta, res_table = NULL, normalize_option =
       ggplot(aes(x = covar, y = y, color = cond_ids, group = subj_ids)) +
       geom_boxplot() +
       theme_bw() +
-      ggtitle(title) +
+      ggtitle(title.p1) +
       facet_wrap(.~cond_ids) +
-      xlab(xlab) +
-      ylab(ylab) +
+      xlab(xlab.p1) +
+      ylab(ylab.p1) +
       theme(legend.position = 'none')
   }else if(class(covar)=='character'){ ################## need to fix
     fig1 <- df %>%
       ggplot(aes(x = covar, y = y, color = cond_ids, group = subj_ids)) +
       geom_boxplot() +
       theme_bw() +
-      ggtitle(title) +
+      ggtitle(title.p1) +
       facet_wrap(.~cond_ids) +
-      xlab(xlab) +
-      ylab(ylab) +
+      xlab(xlab.p1) +
+      ylab(ylab.p1) +
       theme(legend.position = 'none')
   }
 
@@ -135,8 +139,8 @@ plot_dist_by_covar <- function(count, meta, res_table = NULL, normalize_option =
     geom_point() +
     facet_wrap(.~summary) +
     geom_smooth(method = lm) +
-    labs(title = "Subject-level metric",
-         x = xlab, y = "Subject-level metric") +
+    labs(title = title.p2,
+         x = xlab.p2, y = ylab.p2) +
     theme_bw() +
     theme(legend.position = 'none')
 

@@ -14,10 +14,12 @@ plot_dist_by_covar(
   feature,
   covar_name,
   sub_cond = NULL,
-  show_subj = FALSE,
-  xlab = covar_name,
-  ylab = NULL,
-  title = feature
+  xlab.p1 = covar_name,
+  ylab.p1 = NULL,
+  title.p1 = feature,
+  xlab.p2 = covar_name,
+  ylab.p2 = "Subject-level metric",
+  title.p2 = "Subject-level metric"
 )
 }
 \arguments{
@@ -40,13 +42,17 @@ apply to the count matrix.}
 
 \item{sub_cond}{a vector of conditions to plot.}
 
-\item{show_subj}{whether or not to show the subject ID on x-axis.}
+\item{xlab.p1}{text label on x-axis of the first plot.}
 
-\item{xlab}{text label on x-axis of the both plots.}
+\item{ylab.p1}{text label on y-axis of the first plot.}
 
-\item{ylab}{text label on y-axis of the boxplot for feature.}
+\item{title.p1}{title of the first plot. Set to \code{feature} if not specified.}
 
-\item{title}{title of the plot. Set to \code{feature} if not specified.}
+\item{xlab.p2}{text label on x-axis of the second plot.}
+
+\item{ylab.p2}{text label on y-axis of the second plot.}
+
+\item{title.p2}{title of the second plot.}
 }
 \value{
 
