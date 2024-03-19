@@ -17,6 +17,11 @@ Imports:
     plyr, 
     dplyr, 
     ggplot2, 
-    ggrepel
+    ggrepel, 
+    ComplexHeatmap, 
+    circlize, 
+    grid, 
+    ggplotify, 
+    patchwork
 Depends:
     R (>= 2.10)
