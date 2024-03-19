@@ -75,13 +75,6 @@ plot_dist_by_covar <- function(count, meta, res_table = NULL,
     df$cond_ids = factor(df$cond_ids, levels = sub_cond)
   }
 
-  # whether or not to show subject ID on x-axis
-  if(show_subj){
-    axis = element_text(angle = 90, vjust = 0.5, hjust=1)
-  }else{
-    axis = element_blank()
-  }
-
   #------------------
   # create boxplot
   #------------------
