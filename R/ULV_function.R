@@ -20,7 +20,8 @@
 #'
 #' @return a result table summarizing the probabilistic index and p-value
 #'  of each gene.
-#' @import lme4 lmerTest plyr
+#' @importFrom plyr rbind.fill
+#' @import lme4 lmerTest
 #' @export
 #'
 #' @examples
