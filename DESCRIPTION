@@ -16,6 +16,7 @@ Imports:
     scran, 
     plyr, 
     dplyr, 
+    stringr, 
     ggplot2, 
     ggrepel, 
     ComplexHeatmap, 
