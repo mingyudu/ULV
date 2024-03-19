@@ -22,7 +22,7 @@
 #' @export
 #'
 #' @examples
-plot_dist_by_covar <- function(count, meta, res_table = NULL,
+plot_expres_by_covar <- function(count, meta, res_table = NULL,
                                normalize_option = 'pooling',
                                cond_name, subj_name, feature, covar_name,
                                sub_cond = NULL, xlab.p1 = covar_name, ylab.p1 = NULL,
