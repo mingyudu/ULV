@@ -11,7 +11,8 @@ run_DESeq(
   cond_name,
   ctrl_cond,
   case_cond,
-  covariate_name_list = NULL
+  numerical_covar = NULL,
+  categorical_covar = NULL
 )
 }
 \arguments{

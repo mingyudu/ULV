@@ -86,24 +86,32 @@ create_pseudobulk = function(count, meta, subject_name, cond_name,
 #'
 #' @examples
 run_DESeq = function(count, meta, subject_name, cond_name,
-                     ctrl_cond, case_cond, covariate_name_list=NULL){
+                     ctrl_cond, case_cond,
+                     numerical_covar = NULL, categorical_covar = NULL){
   # use raw count!
   data.pseudo = create_pseudobulk(count, meta, subject_name, cond_name,
                                   ctrl_cond, case_cond, aggregate='sum',
-                                  covariate_name_list)
+                                  c(numerical_covar, categorical_covar))
   count.pseudo = data.pseudo$count.pseudo
   meta.pseudo = data.pseudo$meta.pseudo
   meta.pseudo[, subject_name] = as.factor(meta.pseudo[, subject_name])
   meta.pseudo[, cond_name] = factor(meta.pseudo[, cond_name], levels = c(ctrl_cond, case_cond))
 
+  for (vr in categorical_covar){
+    meta.pseudo[,vr] = factor(meta.pseudo[,vr])
+  }
+  for (vr in numerical_covar) {
+    meta.pseudo[,vr] = scale(meta.pseudo[,vr])
+  }
+
   # DESeq2
-  if(is.null(covariate_name_list)){
+  if(is.null(c(numerical_covar, categorical_covar))){
     dds = DESeqDataSetFromMatrix(count.pseudo, meta.pseudo,
                                design = as.formula(paste0('~ ', cond_name)))
   }else{
     dds = DESeqDataSetFromMatrix(count.pseudo, meta.pseudo,
                                  design = as.formula(paste0('~ ',
-                                                            paste0(covariate_name_list, sep = ' + ', collapse = ''),
+                                                            paste0(c(numerical_covar, categorical_covar), sep = ' + ', collapse = ''),
                                                             cond_name)))
   }
 

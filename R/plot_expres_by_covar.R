@@ -9,6 +9,7 @@
 #' @param subj_name a character for subject name in \code{meta}.
 #' @param feature a character for the feature to plot.
 #' @param covar_name a character for covariate name in \code{meta}.
+#' @param base_size a numeric value for the plot fontsize.
 #' @param sub_cond a vector of conditions to plot.
 #' @param xlab.p1 text label on x-axis of the first plot.
 #' @param ylab.p1 text label on y-axis of the first plot.
@@ -25,6 +26,7 @@
 plot_expres_by_covar <- function(count, meta, res_table = NULL,
                                normalize_option = 'pooling',
                                cond_name, subj_name, feature, covar_name,
+                               base_size = 22,
                                sub_cond = NULL, xlab.p1 = covar_name, ylab.p1 = NULL,
                                title.p1 = feature,
                                xlab.p2 = covar_name, ylab.p2 = 'Subject-level metric',
@@ -82,22 +84,26 @@ plot_expres_by_covar <- function(count, meta, res_table = NULL,
     fig1 <- df %>%
       ggplot(aes(x = covar, y = y, color = cond_ids, group = subj_ids)) +
       geom_boxplot() +
-      theme_bw() +
-      ggtitle(title.p1) +
+      theme_bw(base_size = base_size) +
       facet_wrap(.~cond_ids) +
+      ggtitle(title.p1) +
       xlab(xlab.p1) +
       ylab(ylab.p1) +
       theme(legend.position = 'none')
-  }else if(class(covar)=='character'){ ################## need to fix
+  }else if(class(covar)=='character'){
+    if(xlab.p1 == covar_name){
+      xlab.p1 = 'Subject'
+    }
     fig1 <- df %>%
-      ggplot(aes(x = covar, y = y, color = cond_ids, group = subj_ids)) +
+      ggplot(aes(x = subj_ids, y = y, color = cond_ids)) +
       geom_boxplot() +
-      theme_bw() +
+      theme_bw(base_size = base_size) +
+      facet_grid(cond_ids~covar, scales = 'free_x') +
       ggtitle(title.p1) +
-      facet_wrap(.~cond_ids) +
       xlab(xlab.p1) +
       ylab(ylab.p1) +
-      theme(legend.position = 'none')
+      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+            legend.position = 'none')
   }
 
   if(!is.null(res_table)){
@@ -134,7 +140,7 @@ plot_expres_by_covar <- function(count, meta, res_table = NULL,
     geom_smooth(method = lm) +
     labs(title = title.p2,
          x = xlab.p2, y = ylab.p2) +
-    theme_bw() +
+    theme_bw(base_size = base_size) +
     theme(legend.position = 'none')
 
   return(fig1/fig2)

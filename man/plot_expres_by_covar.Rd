@@ -13,6 +13,7 @@ plot_expres_by_covar(
   subj_name,
   feature,
   covar_name,
+  base_size = 22,
   sub_cond = NULL,
   xlab.p1 = covar_name,
   ylab.p1 = NULL,
@@ -39,6 +40,8 @@ apply to the count matrix.}
 \item{feature}{a character for the feature to plot.}
 
 \item{covar_name}{a character for covariate name in \code{meta}.}
+
+\item{base_size}{a numeric value for the plot fontsize.}
 
 \item{sub_cond}{a vector of conditions to plot.}
 
