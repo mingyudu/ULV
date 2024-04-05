@@ -24,7 +24,7 @@ data('example_data')
 count = example_data$count_matrix
 meta = example_data$metadata
 
-res_table = ULV(count, meta, normalize=TRUE, 
+res_table = fit_ULV(count, meta, normalize=TRUE, 
                 subject_name = 'donor', cond_name = 'group_per_sample', 
                 ctrl_cond = 'mild', case_cond = 'severe', 
                 weighted = TRUE, covariate_name_list=c('age_yr','sex'))
