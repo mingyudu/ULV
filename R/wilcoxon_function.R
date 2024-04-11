@@ -89,3 +89,57 @@ wilcox_subject <- function(count, meta, normalize_option = 'pooling',
   rownames(res) = rownames(count)
   return(res)
 }
+
+
+
+#' Wilcoxon test at cell level
+#'
+#' @param count count matrix.
+#' @param meta metadata.
+#' @param normalize_option a character value to show the normalization method to
+#'  apply to the count matrix.
+#' @param subj_name a character for subject name in \code{meta}.
+#' @param cond_name a character for condition name in \code{meta}.
+#' @param case_cond a character for case name.
+#' @param ctrl_cond a character for control name.
+#'
+#' @return A result table containing log2-fold change, p-values, and FDR-adjusted p-values.
+#'
+#' @export
+#'
+#' @examples
+wilcox_cell <- function(count, meta, normalize_option = 'pooling',
+                           subj_name, cond_name,
+                           case_cond, ctrl_cond){
+  #---------------------------------
+  # pre-processing
+  #---------------------------------
+  if(normalize_option %in% c('pooling', 'clr')){
+    message('Normalizing the input count matrix using ', normalize_option)
+    count = normalize(count, meta, option = normalize_option)
+  }else if (normalize_option == 'none'){
+    message('Use the input count matrix directly. No normalization was utilized.')
+    count = normalize(count, meta, option = normalize_option)
+  }else {
+    stop('The normalizatio option argument must be one of the following options: pooling, clr, or none.')
+  }
+
+  ngene = nrow(count)
+  # only select the cells in the two groups
+  count = count[, meta[,cond_name] %in% c(case_cond, ctrl_cond)]
+  meta = meta[meta[,cond_name] %in% c(case_cond, ctrl_cond),]
+
+  # wilcoxon at single cell level
+  res = apply(count, 1, function(x){
+    test = wilcox.test(x[meta[,cond_name]==case_cond], x[meta[,cond_name]==ctrl_cond])
+    fc = test$statistic/(sum(meta[,cond_name]==case_cond)*sum(meta[,cond_name]==ctrl_cond))
+    pval = test$p.value
+    return(c(fc = fc, pval = pval))
+  })
+  res = as.data.frame(t(res))
+  colnames(res) = c('FC', 'pval')
+
+  res$padj = p.adjust(res$pval, method = 'BH')
+  rownames(res) = rownames(count)
+  return(res)
+}
