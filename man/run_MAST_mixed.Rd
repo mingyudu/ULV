@@ -13,8 +13,8 @@ run_MAST_mixed(
   ctrl_cond,
   strictConvergence = TRUE,
   nAGQ = 1,
-  categorical_covar_list = NULL,
-  numerical_covar_list = NULL
+  categorical_covar = NULL,
+  numerical_covar = NULL
 )
 }
 \arguments{
@@ -36,12 +36,9 @@ complains about convergence}
 \item{nAGQ}{nAGQ = 1 (default) will have more accurate results but longer runtime
 and a higher chance of convergence failures, otherwise use nAGQ = 0}
 
-\item{categorical_covar_list}{a list of character values for the categorical covariate names}
+\item{categorical_covar}{a list of character values for the categorical covariate names}
 
-\item{numerical_covar_list}{a list of character values for the numerical covariate names}
-
-\item{covariate_name_list}{a vector of covariate name to adjust.
-Set to NULL if there is no covariate adjustment.}
+\item{numerical_covar}{a list of character values for the numerical covariate names}
 }
 \value{
 A data frame of MAST model fitting results containing log2-fold change, p-values, and BH-adjusted p-values.

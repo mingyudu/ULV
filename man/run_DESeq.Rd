@@ -28,7 +28,10 @@ run_DESeq(
 
 \item{case_cond}{a character for the case condition name.}
 
-\item{covariate_name_list}{a vector of covariate name to adjust.
+\item{numerical_covar}{a vector of numerical covariate name to adjust.
+Set to NULL if there is no covariate adjustment.}
+
+\item{categorical_covar}{a vector of categorical covariate name to adjust.
 Set to NULL if there is no covariate adjustment.}
 }
 \value{

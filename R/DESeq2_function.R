@@ -77,7 +77,9 @@ create_pseudobulk = function(count, meta, subject_name, cond_name,
 #' @param cond_name a character for the codition name in \code{meta}.
 #' @param ctrl_cond a character for the control condition name.
 #' @param case_cond a character for the case condition name.
-#' @param covariate_name_list a vector of covariate name to adjust.
+#' @param numerical_covar a vector of numerical covariate name to adjust.
+#'  Set to NULL if there is no covariate adjustment.
+#' @param categorical_covar a vector of categorical covariate name to adjust.
 #'  Set to NULL if there is no covariate adjustment.
 #'
 #' @return A result table for DESeq2 result.
