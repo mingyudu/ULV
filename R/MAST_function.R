@@ -2,7 +2,7 @@
 #'
 #' @param count Raw count matrix.
 #' @param meta a data frame of metadata.
-#' @param subj_name a character for the subject name in \code{meta}.
+#' @param subject_name a character for the subject name in \code{meta}.
 #' @param cond_name a character for the condition name in \code{meta}.
 #' @param case_cond a character for case name.
 #' @param ctrl_cond a character for control name.
@@ -26,14 +26,14 @@
 #' meta = example_data$metadata
 #'
 #' res_table = run_MAST_mixed(count, meta,
-#'                            subj_name = 'donor',
+#'                            subject_name = 'donor',
 #'                            cond_name = 'group_per_sample',
 #'                            ctrl_cond = 'mild',
 #'                            case_cond = 'severe',
 #'                            strictConvergence = FALSE,
 #'                            nAGQ = 0)
 run_MAST_mixed = function(count, meta,
-                          subj_name, cond_name,
+                          subject_name, cond_name,
                           case_cond, ctrl_cond,
                           strictConvergence = TRUE,
                           nAGQ = 1,
@@ -70,7 +70,7 @@ run_MAST_mixed = function(count, meta,
   diagnosis = factor(meta[,cond_name], levels=c(ctrl_cond, case_cond))
   colData(sca)$cngeneson = as.numeric(cdr)
   colData(sca)$diagnosis = diagnosis
-  colData(sca)$ind = as.factor(meta[,subj_name])
+  colData(sca)$ind = as.factor(meta[,subject_name])
 
   # add covariate to metadata if you have any
   sca_colData = colData(sca)
@@ -134,6 +134,9 @@ run_MAST_mixed = function(count, meta,
                   pval = `Pr(>Chisq)`,
                   log2FC = coef)
 
+  # add rownames
+  fcHurdle_df <- data.frame(fcHurdle_df)
+  rownames(fcHurdle_df) <- fcHurdle_df$feature
   # pval = apply(lrt, 1, function(x){x[3,3]})
   return(fcHurdle_df)
 }
@@ -143,7 +146,7 @@ run_MAST_mixed = function(count, meta,
 #'
 #' @param count Raw count matrix.
 #' @param meta a data frame of metadata.
-#' @param subj_name a character for the subject name in \code{meta}.
+#' @param subject_name a character for the subject name in \code{meta}.
 #' @param cond_name a character for the condition name in \code{meta}.
 #' @param case_cond a character for case name.
 #' @param ctrl_cond a character for control name.
@@ -158,7 +161,7 @@ run_MAST_mixed = function(count, meta,
 #'
 #' @examples
 run_MAST_glm = function(count, meta,
-                          subj_name, cond_name,
+                          subject_name, cond_name,
                           case_cond, ctrl_cond,
                           categorical_covar = NULL,
                           numerical_covar = NULL){
@@ -193,7 +196,7 @@ run_MAST_glm = function(count, meta,
   diagnosis = factor(meta[,cond_name], levels=c(ctrl_cond, case_cond))
   colData(sca)$cngeneson = as.numeric(cdr)
   colData(sca)$diagnosis = diagnosis
-  colData(sca)$ind = as.factor(meta[,subj_name])
+  colData(sca)$ind = as.factor(meta[,subject_name])
 
   # add covariate to metadata if you have any
   sca_colData = colData(sca)
@@ -253,6 +256,9 @@ run_MAST_glm = function(count, meta,
                   pval = `Pr(>Chisq)`,
                   log2FC = coef)
 
+  # add rownames
+  fcHurdle_df <- data.frame(fcHurdle_df)
+  rownames(fcHurdle_df) <- fcHurdle_df$feature
   # pval = apply(lrt, 1, function(x){x[3,3]})
   return(fcHurdle_df)
 }

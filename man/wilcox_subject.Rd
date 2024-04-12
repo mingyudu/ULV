@@ -8,7 +8,7 @@ wilcox_subject(
   count,
   meta,
   normalize_option = "pooling",
-  subj_name,
+  subject_name,
   cond_name,
   case_cond,
   ctrl_cond,
@@ -23,7 +23,7 @@ wilcox_subject(
 \item{normalize_option}{a character value to show the normalization method to
 apply to the count matrix.}
 
-\item{subj_name}{a character for subject name in \code{meta}.}
+\item{subject_name}{a character for subject name in \code{meta}.}
 
 \item{cond_name}{a character for condition name in \code{meta}.}
 

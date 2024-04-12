@@ -7,7 +7,7 @@
 run_MAST_glm(
   count,
   meta,
-  subj_name,
+  subject_name,
   cond_name,
   case_cond,
   ctrl_cond,
@@ -20,7 +20,7 @@ run_MAST_glm(
 
 \item{meta}{a data frame of metadata.}
 
-\item{subj_name}{a character for the subject name in \code{meta}.}
+\item{subject_name}{a character for the subject name in \code{meta}.}
 
 \item{cond_name}{a character for the condition name in \code{meta}.}
 

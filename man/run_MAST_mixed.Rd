@@ -7,7 +7,7 @@
 run_MAST_mixed(
   count,
   meta,
-  subj_name,
+  subject_name,
   cond_name,
   case_cond,
   ctrl_cond,
@@ -22,7 +22,7 @@ run_MAST_mixed(
 
 \item{meta}{a data frame of metadata.}
 
-\item{subj_name}{a character for the subject name in \code{meta}.}
+\item{subject_name}{a character for the subject name in \code{meta}.}
 
 \item{cond_name}{a character for the condition name in \code{meta}.}
 
@@ -53,7 +53,7 @@ count = count[1:100,]
 meta = example_data$metadata
 
 res_table = run_MAST_mixed(count, meta,
-                           subj_name = 'donor',
+                           subject_name = 'donor',
                            cond_name = 'group_per_sample',
                            ctrl_cond = 'mild',
                            case_cond = 'severe',
