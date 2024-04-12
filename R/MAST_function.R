@@ -160,6 +160,16 @@ run_MAST_mixed = function(count, meta,
 #' @export
 #'
 #' @examples
+#' data('example_data')
+#' count = example_data$count_matrix
+#' count = count[1:100,]
+#' meta = example_data$metadata
+#'
+#' res_table = run_MAST_glm(count, meta,
+#'                            subject_name = 'donor',
+#'                            cond_name = 'group_per_sample',
+#'                            ctrl_cond = 'mild',
+#'                            case_cond = 'severe')
 run_MAST_glm = function(count, meta,
                           subject_name, cond_name,
                           case_cond, ctrl_cond,

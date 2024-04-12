@@ -38,3 +38,15 @@ A data frame of MAST model fitting results containing log2-fold change, p-values
 \description{
 Fit MAST glm effect model
 }
+\examples{
+data('example_data')
+count = example_data$count_matrix
+count = count[1:100,]
+meta = example_data$metadata
+
+res_table = run_MAST_glm(count, meta,
+                           subject_name = 'donor',
+                           cond_name = 'group_per_sample',
+                           ctrl_cond = 'mild',
+                           case_cond = 'severe')
+}
