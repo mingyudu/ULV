@@ -90,12 +90,19 @@ plot_dij_heatmap <- function(count, meta, normalize_option = 'pooling',
   fig1 = df %>%
     ggplot(aes(x = subject, y = y, color = condition)) +
     geom_boxplot() +
+    scale_color_manual(values = c('#80c241', '#eb91bd')) +
     facet_wrap(.~condition, scales = 'free') +
     ggtitle(title) +
     xlab(xlab) +
     ylab(ylab) +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+    theme_bw(base_size = 22) +
+    theme(panel.grid.minor = element_blank(),
+          panel.grid.major.x = element_blank(),
+          axis.line = element_line(colour = "black",linewidth = 1),
+          axis.text = element_text(color = 'black'),
+          strip.text = element_text(size = 22),
+          strip.background = element_rect(linewidth = 2),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
           legend.position = 'none') +
     ylim(0, max.y)
 
@@ -119,15 +126,19 @@ plot_dij_heatmap <- function(count, meta, normalize_option = 'pooling',
   col_fun = colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
   fig2 <- Heatmap(d_mat,
             col = col_fun,
-            name = 'd_ij',
-            rect_gp = gpar(col = 'black', lwd = 0.5),
-            row_names_gp = gpar(fontsize = 8),
-            column_names_gp = gpar(fontsize = 8),
+            name = 'Probabilistic Index',
+            rect_gp = gpar(col = 'white', lwd = 1),
+            row_names_gp = gpar(fontsize = 15, fontface = 'plain'),
+            column_names_gp = gpar(fontsize = 15, fontface = 'plain'),
+            column_names_rot = 60,
             heatmap_legend_param = list(grid_width = unit(0.6, 'cm'),
-                                        title_gp = gpar(fontface = "plain", fontsize = 10),
-                                        direction = 'horizontal'),
+                                        legend_width = unit(8, "cm"),
+                                        title_gp = gpar(fontface = "plain", fontsize = 18),
+                                        labels_gp = gpar(fontsize = 15),
+                                        direction = 'horizontal',
+                                        title_position = 'topcenter'),
             cell_fun = function(j, i, x, y, width, height, fill) {
-              grid.text(sprintf("%.2f", d_mat[i, j]), x, y, gp = gpar(fontsize = 10, col = 'black'))},
+              grid.text(sprintf("%.2f", d_mat[i, j]), x, y, gp = gpar(fontsize = 18, col = 'black'))},
             show_row_dend=FALSE, show_column_dend = FALSE,
             cluster_rows = FALSE, cluster_columns = FALSE)
 
