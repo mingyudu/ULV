@@ -235,7 +235,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
         print(w)
 
         message('Refit the model for feature ', g)
-        # refit the model
+        # refit the model using allFit function from lme4 package
         diff_optims = allFit(model_fit)
         diff_optims_OK <- diff_optims[sapply(diff_optims, is, "merMod")]
         # check if it converged
