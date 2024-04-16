@@ -233,12 +233,34 @@ fit_ULV <- function(count, meta, normalize_option='none',
       }else{
         message('feature ', g, ': model fitting did not converged!')
         print(w)
-        res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
-                             PI.SE = summary(model_fit)$coefficients[1,2],
-                             vcov.case = vcov1,
-                             vcov.ctrl = vcov2,
-                             conv_info = 'not_converge',
-                             pval = summary(model_fit)$coefficients[1,5]))
+
+        message('Refit the model for feature ', g)
+        # refit the model
+        diff_optims = allFit(model_fit)
+        diff_optims_OK <- diff_optims[sapply(diff_optims, is, "merMod")]
+        # check if it converged
+        convergence_results <- lapply(diff_optims_OK,
+                                      function(x){
+                                        x@optinfo$conv$lme4$messages
+                                      })
+        working_indices <- sapply(convergence_results, is.null)
+        if(sum(working_indices) == 0){
+          message("No algorithms from allFit converged for feature ", g, ". You may still be able to use the results, but proceed with caution.")
+          res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
+                               PI.SE = summary(model_fit)$coefficients[1,2],
+                               vcov.case = vcov1,
+                               vcov.ctrl = vcov2,
+                               conv_info = 'not_converge',
+                               pval = summary(model_fit)$coefficients[1,5]))
+        } else {
+          model_fit <- diff_optims[working_indices][[1]]
+          res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
+                               PI.SE = summary(model_fit)$coefficients[1,2],
+                               vcov.case = vcov1,
+                               vcov.ctrl = vcov2,
+                               conv_info = 'converge',
+                               pval = summary(model_fit)$coefficients[1,5]))
+        }
       }
       # include covariate coefficient in output
       n_coeff = dim(summary(model_fit)$coefficients)[1]
