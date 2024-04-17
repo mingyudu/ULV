@@ -231,12 +231,12 @@ fit_ULV <- function(count, meta, normalize_option='none',
                              conv_info = 'converge',
                              pval = summary(model_fit)$coefficients[1,5]))
       }else{
-        message('feature ', g, ': model fitting did not converged!')
+        cat('\nModel fitting did not converged in the default lmer function for feature ', g, '.\n')
         print(w)
 
-        message('Refit the model for feature ', g)
+        cat('Refit the model for feature ', g, '\n')
         # refit the model using allFit function from lme4 package
-        diff_optims = allFit(model_fit, verbose = FALSE)
+        diff_optims = allFit(model_fit)
         diff_optims_OK <- diff_optims[sapply(diff_optims, is, "merMod")]
         # check if it converged
         convergence_results <- lapply(diff_optims_OK,
@@ -245,7 +245,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
                                       })
         working_indices <- sapply(convergence_results, is.null)
         if(sum(working_indices) == 0){
-          message("No algorithms from allFit converged for feature ", g, ". You may still be able to use the results, but proceed with caution.")
+          cat("\nNo algorithms from allFit converged for feature ", g, ". You may still be able to use the results, but proceed with caution.\n")
           res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
                                PI.SE = summary(model_fit)$coefficients[1,2],
                                vcov.case = vcov1,
@@ -253,6 +253,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
                                conv_info = 'not_converge',
                                pval = summary(model_fit)$coefficients[1,5]))
         } else {
+          cat("\nRefitted model converged for feature ", g, '!\n')
           model_fit <- diff_optims[working_indices][[1]]
           res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
                                PI.SE = summary(model_fit)$coefficients[1,2],
