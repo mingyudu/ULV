@@ -12,6 +12,7 @@ fit_ULV(
   cond_name,
   ctrl_cond,
   case_cond,
+  workers.num = 8,
   weighted = FALSE,
   covariate_name_list = NULL
 )
@@ -31,6 +32,8 @@ apply to the count matrix.}
 \item{ctrl_cond}{a character for control name.}
 
 \item{case_cond}{a character for case name.}
+
+\item{workers.num}{an integer value to indicate the number of workers for parallel computing}
 
 \item{weighted}{a binary variable indicating whether the analysis is
 weighted by varying cluster sizes.}
@@ -57,6 +60,6 @@ meta = example_data$metadata
 
 res_table = fit_ULV(count, meta, normalize_option='pooling', subject_name = 'donor',
                 cond_name = 'group_per_sample', ctrl_cond = 'mild',
-                case_cond = 'severe', weighted = TRUE,
+                case_cond = 'severe', workers.num = 8, weighted = TRUE,
                 covariate_name_list=c('age_yr','sex'))
 }

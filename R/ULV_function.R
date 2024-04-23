@@ -12,6 +12,7 @@
 #' @param cond_name a character for condition name in \code{meta}.
 #' @param ctrl_cond a character for control name.
 #' @param case_cond a character for case name.
+#' @param workers.num an integer value to indicate the number of workers for parallel computing
 #' @param weighted a binary variable indicating whether the analysis is
 #'  weighted by varying cluster sizes.
 #' @param covariate_name_list a vector of character of covariate names.
@@ -21,7 +22,7 @@
 #' @return a result table summarizing the probabilistic index and p-value
 #'  of each gene.
 #' @importFrom plyr rbind.fill
-#' @import lme4 lmerTest
+#' @import lme4 lmerTest BiocParallel tictoc
 #' @export
 #'
 #' @examples
@@ -33,12 +34,13 @@
 #'
 #' res_table = fit_ULV(count, meta, normalize_option='pooling', subject_name = 'donor',
 #'                 cond_name = 'group_per_sample', ctrl_cond = 'mild',
-#'                 case_cond = 'severe', weighted = TRUE,
+#'                 case_cond = 'severe', workers.num = 8, weighted = TRUE,
 #'                 covariate_name_list=c('age_yr','sex'))
 
 fit_ULV <- function(count, meta, normalize_option='none',
                     subject_name, cond_name,
                     ctrl_cond, case_cond,
+                    workers.num = 8,
                     weighted = FALSE,
                     covariate_name_list=NULL) {
 
@@ -46,12 +48,16 @@ fit_ULV <- function(count, meta, normalize_option='none',
   # preprocessing
   #-------------------------------------------------
 
+  stopifnot(all(colnames(count) == rownames(meta)))
+
   if(normalize_option %in% c('pooling', 'clr')){
     message('Normalizing the input count matrix using ', normalize_option)
-    count = normalize(count, meta, option = normalize_option)
+    tic(paste0('Normalization time'))
+    count = normalize_data(count, meta, subject_name = subject_name, option = normalize_option)
+    toc()
   }else if (normalize_option == 'none'){
     message('Use the input count matrix directly. No normalization was utilized.')
-    count = normalize(count, meta, option = normalize_option)
+    count = normalize_data(count, meta, option = normalize_option)
   }else {
     stop('The normalizatio option argument must be one of the following options: pooling, clr, or none.')
   }
@@ -106,11 +112,12 @@ fit_ULV <- function(count, meta, normalize_option='none',
   #---------------------------------------------------
 
   message('Fitting ULV model')
-  res_table = Reduce(plyr::rbind.fill, lapply(1:ngene, function(g){
+  tic('ULV model fitting time')
+  res_table = Reduce(plyr::rbind.fill, bplapply(1:ngene, function(g){
 
-    if(g %% 100 == 0){
-      message('Finished model fitting for feature ', g, '/', ngene)
-    }
+    # if(g %% 100 == 0){
+    #   message('Finished model fitting for feature ', g, '/', ngene)
+    # }
     y = as.numeric(count[g,])
     y.split = split(y, ind_fct)
 
@@ -231,37 +238,37 @@ fit_ULV <- function(count, meta, normalize_option='none',
                              conv_info = 'converge',
                              pval = summary(model_fit)$coefficients[1,5]))
       }else{
-        cat('\nModel fitting did not converged in the default lmer function for feature ', g, '.\n')
-        print(w)
-
-        cat('Refit the model for feature ', g, '\n')
-        # refit the model using allFit function from lme4 package
-        diff_optims = allFit(model_fit)
-        diff_optims_OK <- diff_optims[sapply(diff_optims, is, "merMod")]
-        # check if it converged
-        convergence_results <- lapply(diff_optims_OK,
-                                      function(x){
-                                        x@optinfo$conv$lme4$messages
-                                      })
-        working_indices <- sapply(convergence_results, is.null)
-        if(sum(working_indices) == 0){
-          cat("\nNo algorithms from allFit converged for feature ", g, ". You may still be able to use the results, but proceed with caution.\n")
-          res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
-                               PI.SE = summary(model_fit)$coefficients[1,2],
-                               vcov.case = vcov1,
-                               vcov.ctrl = vcov2,
-                               conv_info = 'not_converge',
-                               pval = summary(model_fit)$coefficients[1,5]))
-        } else {
-          cat("\nRefitted model converged for feature ", g, '!\n')
-          model_fit <- diff_optims[working_indices][[1]]
+        # cat('\nModel fitting did not converged in the default lmer function for feature ', g, '.\n')
+        # print(w)
+        #
+        # cat('Refit the model for feature ', g, '\n')
+        # # refit the model using allFit function from lme4 package
+        # diff_optims = allFit(model_fit)
+        # diff_optims_OK <- diff_optims[sapply(diff_optims, is, "merMod")]
+        # # check if it converged
+        # convergence_results <- lapply(diff_optims_OK,
+        #                               function(x){
+        #                                 x@optinfo$conv$lme4$messages
+        #                               })
+        # working_indices <- sapply(convergence_results, is.null)
+        # if(sum(working_indices) == 0){
+        #   cat("\nNo algorithms from allFit converged for feature ", g, ". You may still be able to use the results, but proceed with caution.\n")
+        #   res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
+        #                        PI.SE = summary(model_fit)$coefficients[1,2],
+        #                        vcov.case = vcov1,
+        #                        vcov.ctrl = vcov2,
+        #                        conv_info = 'not_converge',
+        #                        pval = summary(model_fit)$coefficients[1,5]))
+        # } else {
+        #   cat("\nRefitted model converged for feature ", g, '!\n')
+        #   model_fit <- diff_optims[working_indices][[1]]
           res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
                                PI.SE = summary(model_fit)$coefficients[1,2],
                                vcov.case = vcov1,
                                vcov.ctrl = vcov2,
                                conv_info = 'converge',
                                pval = summary(model_fit)$coefficients[1,5]))
-        }
+        # }
       }
       # include covariate coefficient in output
       n_coeff = dim(summary(model_fit)$coefficients)[1]
@@ -274,7 +281,8 @@ fit_ULV <- function(count, meta, normalize_option='none',
       }
     }
     res
-  }))
+  }, BPPARAM = SnowParam(workers = workers.num, type = "SOCK")))
+  toc()
 
   #---------------------------------------------------
   # create summary table
