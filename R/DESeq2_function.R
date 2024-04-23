@@ -128,6 +128,7 @@ run_DESeq_pseudobulk = function(count, meta, subject_name, cond_name,
 #'
 #' @param count count matrix.
 #' @param meta meta data.
+#' @param subject_name a character for subject name in \code{meta}.
 #' @param cond_name a character for the codition name in \code{meta}.
 #' @param ctrl_cond a character for the control condition name.
 #' @param case_cond a character for the case condition name.
@@ -137,11 +138,11 @@ run_DESeq_pseudobulk = function(count, meta, subject_name, cond_name,
 #'  Set to NULL if there is no covariate adjustment.
 #'
 #' @return A result table for DESeq2 result.
-#' @import DESeq2
+#' @import DESeq2 scran
 #' @export
 #'
 #' @examples
-run_DESeq_sc = function(count, meta, cond_name,
+run_DESeq_sc = function(count, meta, subject_name, cond_name,
                         ctrl_cond, case_cond,
                         numerical_covar = NULL, categorical_covar = NULL){
 
@@ -154,6 +155,29 @@ run_DESeq_sc = function(count, meta, cond_name,
     meta[,vr] = scale(meta[,vr])
   }
 
+  # obtain the size factor on a subject-by-subject basis
+  df = data.frame(cell_name = colnames(count),
+                  subject = meta[, subject_name])
+  rownames(df) = df$cell_name
+
+  df$size_factor = NA
+  subject_list = unique(meta[, subject_name])
+  for (i in 1:length(subject_list)) {
+    subj = subject_list[i]
+    # print(subj)
+    dds = DESeqDataSetFromMatrix(count, colData = meta, design = ~1)
+    dds = dds[,colData(dds)[,subject_name]==subj]
+    # use scran normalization suggested by DESeq2 tutorial
+    # https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#recommendations-for-single-cell-analysis
+    dds = computeSumFactors(dds)
+    size_factor = sizeFactors(dds)
+    # cell_name = names(size_factor)
+    # print(all(cell_name == df$cell_name[df$subject==subj]))
+    size_factor = as.vector(size_factor)
+    df$size_factor[df$subject==subj] = size_factor
+  }
+  size_factor = df$size_factor
+
   # DESeq2
   if(is.null(c(numerical_covar, categorical_covar))){
     dds = DESeqDataSetFromMatrix(count, meta,
@@ -164,9 +188,10 @@ run_DESeq_sc = function(count, meta, cond_name,
                                                             paste0(c(numerical_covar, categorical_covar), sep = ' + ', collapse = ''),
                                                             cond_name)))
   }
-  # use scran normalization suggested by DESeq2 tutorial
-  # https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#recommendations-for-single-cell-analysis
-  dds = computeSumFactors(dds)
+
+  sizeFactors(dds) = size_factor
+
+  # run DESeq in single-cell version
   dds = DESeq(dds, useT=TRUE, minmu=1e-6, minReplicatesForReplace = Inf)
   res = results(dds, contrast = c(cond_name, case_cond, ctrl_cond),
                 cooksCutoff = FALSE, independentFiltering = FALSE)
