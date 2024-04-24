@@ -7,6 +7,7 @@
 run_DESeq_sc(
   count,
   meta,
+  subject_name,
   cond_name,
   ctrl_cond,
   case_cond,
@@ -18,6 +19,8 @@ run_DESeq_sc(
 \item{count}{count matrix.}
 
 \item{meta}{meta data.}
+
+\item{subject_name}{a character for subject name in \code{meta}.}
 
 \item{cond_name}{a character for the codition name in \code{meta}.}
 

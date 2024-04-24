@@ -253,21 +253,21 @@ fit_ULV <- function(count, meta, normalize_option='none',
         # working_indices <- sapply(convergence_results, is.null)
         # if(sum(working_indices) == 0){
         #   cat("\nNo algorithms from allFit converged for feature ", g, ". You may still be able to use the results, but proceed with caution.\n")
-        #   res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
-        #                        PI.SE = summary(model_fit)$coefficients[1,2],
-        #                        vcov.case = vcov1,
-        #                        vcov.ctrl = vcov2,
-        #                        conv_info = 'not_converge',
-        #                        pval = summary(model_fit)$coefficients[1,5]))
-        # } else {
-        #   cat("\nRefitted model converged for feature ", g, '!\n')
-        #   model_fit <- diff_optims[working_indices][[1]]
           res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
                                PI.SE = summary(model_fit)$coefficients[1,2],
                                vcov.case = vcov1,
                                vcov.ctrl = vcov2,
-                               conv_info = 'converge',
+                               conv_info = 'not_converge',
                                pval = summary(model_fit)$coefficients[1,5]))
+        # } else {
+        #   cat("\nRefitted model converged for feature ", g, '!\n')
+        #   model_fit <- diff_optims[working_indices][[1]]
+          # res = try(data.frame(PI = summary(model_fit)$coefficients[1,1]+0.5,
+          #                      PI.SE = summary(model_fit)$coefficients[1,2],
+          #                      vcov.case = vcov1,
+          #                      vcov.ctrl = vcov2,
+          #                      conv_info = 'converge',
+          #                      pval = summary(model_fit)$coefficients[1,5]))
         # }
       }
       # include covariate coefficient in output
@@ -281,7 +281,8 @@ fit_ULV <- function(count, meta, normalize_option='none',
       }
     }
     res
-  }, BPPARAM = SnowParam(workers = workers.num, type = "SOCK")))
+  }, BPPARAM = SnowParam(workers = workers.num, tasks = 20, progressbar = TRUE, type = "SOCK")))
+  # tasks = 20: progressbar will update 20 times
   toc()
 
   #---------------------------------------------------
