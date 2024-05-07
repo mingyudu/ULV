@@ -48,13 +48,13 @@ plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
 
   if(normalize_option %in% c('pooling', 'clr')){
     message('Normalizing the input count matrix using ', normalize_option)
-    count = normalize(count, meta, option = normalize_option)
+    count = normalize_data(count, meta, option = normalize_option)
     if(is.null(ylab)){
       ylab = 'Normalized expression'
     }
   }else if (normalize_option == 'none'){
     message('Use the input count matrix directly. No normalization was utilized.')
-    count = normalize(count, meta, option = normalize_option)
+    count = normalize_data(count, meta, option = normalize_option)
     if(is.null(ylab)){
       ylab = 'Expression'
     }
@@ -92,6 +92,7 @@ plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
     fig <-df %>%
             ggplot(aes(x = subj_ids, y = y, color = cond_ids)) +
             geom_boxplot() +
+            scale_color_manual(values = c('#80c241', '#eb91bd')) +
             theme_bw() +
             ggtitle(title) +
             xlab(xlab) +
@@ -104,6 +105,7 @@ plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
     fig <- df %>%
               ggplot(aes(x = subj_ids, y = y, color = cond_ids)) +
               geom_boxplot() +
+              scale_color_manual(values = c('#80c241', '#eb91bd')) +
               theme_bw() +
               ggtitle(title) +
               xlab(xlab) +
