@@ -12,6 +12,7 @@
 #' @param subj_name a character for subject name in \code{meta}.
 #' @param feature a character for the feature to plot.
 #' @param sub_cond a vector of conditions to plot.
+#' @param base_size base size of the figure. Set the default to 15.
 #' @param y_range The range of y-axis in the plot. Set to NULL if not specified.
 #' @param show_subj whether or not to show the subject ID on x-axis.
 #' @param xlab text label on x-axis of the plot.
@@ -34,6 +35,7 @@
 #'                     feature = feat)
 plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
                                  cond_name, subj_name, feature, sub_cond = NULL,
+                                 base_size = 15,
                                  y_range = NULL, show_subj = FALSE,
                                  xlab = 'Subject', ylab = NULL, title = feature){
 
@@ -93,7 +95,7 @@ plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
             ggplot(aes(x = subj_ids, y = y, color = cond_ids)) +
             geom_boxplot() +
             scale_color_manual(values = c('#80c241', '#eb91bd')) +
-            theme_bw(base_size = 22) +
+            theme_bw(base_size = base_size) +
             ggtitle(title) +
             xlab(xlab) +
             ylab(ylab) +
@@ -108,7 +110,7 @@ plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
               ggplot(aes(x = subj_ids, y = y, color = cond_ids)) +
               geom_boxplot() +
               scale_color_manual(values = c('#80c241', '#eb91bd')) +
-              theme_bw(base_size = 22) +
+              theme_bw(base_size = base_size) +
               ggtitle(title) +
               xlab(xlab) +
               ylab(ylab) +

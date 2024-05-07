@@ -12,6 +12,7 @@ plot_multi_subj_dist(
   subj_name,
   feature,
   sub_cond = NULL,
+  base_size = 15,
   y_range = NULL,
   show_subj = FALSE,
   xlab = "Subject",
@@ -34,6 +35,8 @@ apply to the count matrix.}
 \item{feature}{a character for the feature to plot.}
 
 \item{sub_cond}{a vector of conditions to plot.}
+
+\item{base_size}{base size of the figure. Set the default to 15.}
 
 \item{y_range}{The range of y-axis in the plot. Set to NULL if not specified.}
 
