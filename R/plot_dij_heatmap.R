@@ -33,10 +33,10 @@ plot_dij_heatmap <- function(count, meta, normalize_option = 'pooling',
 
   if(normalize_option %in% c('pooling', 'clr')){
     message('Normalizing the input count matrix using ', normalize_option)
-    count = normalize(count, meta, option = normalize_option)
+    count = normalize_data(count, meta, option = normalize_option)
   }else if (normalize_option == 'none'){
     message('Use the input count matrix directly. No normalization was utilized.')
-    count = normalize(count, meta, option = normalize_option)
+    count = normalize_data(count, meta, option = normalize_option)
   }else {
     stop('The normalizatio option argument must be one of the following options: pooling, clr, or none.')
   }
@@ -83,28 +83,28 @@ plot_dij_heatmap <- function(count, meta, normalize_option = 'pooling',
   #------------------------------------------
   # make boxplot for distribution of subject
   #------------------------------------------
-  df = data.frame(y = y,
-                  subject = subject,
-                  condition = condition)
-  max.y = max(df$y)
-  fig1 = df %>%
-    ggplot(aes(x = subject, y = y, color = condition)) +
-    geom_boxplot() +
-    scale_color_manual(values = c('#80c241', '#eb91bd')) +
-    facet_wrap(.~condition, scales = 'free') +
-    ggtitle(title) +
-    xlab(xlab) +
-    ylab(ylab) +
-    theme_bw(base_size = 22) +
-    theme(panel.grid.minor = element_blank(),
-          panel.grid.major.x = element_blank(),
-          axis.line = element_line(colour = "black",linewidth = 1),
-          axis.text = element_text(color = 'black'),
-          strip.text = element_text(size = 22),
-          strip.background = element_rect(linewidth = 2),
-          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-          legend.position = 'none') +
-    ylim(0, max.y)
+  # df = data.frame(y = y,
+  #                 subject = subject,
+  #                 condition = condition)
+  # max.y = max(df$y)
+  # fig1 = df %>%
+  #   ggplot(aes(x = subject, y = y, color = condition)) +
+  #   geom_boxplot() +
+  #   scale_color_manual(values = c('#80c241', '#eb91bd')) +
+  #   facet_wrap(.~condition, scales = 'free') +
+  #   ggtitle(title) +
+  #   xlab(xlab) +
+  #   ylab(ylab) +
+  #   theme_bw(base_size = 22) +
+  #   theme(panel.grid.minor = element_blank(),
+  #         panel.grid.major.x = element_blank(),
+  #         axis.line = element_line(colour = "black",linewidth = 1),
+  #         axis.text = element_text(color = 'black'),
+  #         strip.text = element_text(size = 22),
+  #         strip.background = element_rect(linewidth = 2),
+  #         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+  #         legend.position = 'none') +
+  #   ylim(0, max.y)
 
   #---------------------------------------------------------
   # compute pairwise difference d_ij
@@ -147,8 +147,8 @@ plot_dij_heatmap <- function(count, meta, normalize_option = 'pooling',
   #------------------------------
   grob2 = grid.grabExpr(draw(fig2, heatmap_legend_side = "bottom"))
   gg2 = as.ggplot(grob2)
-  fig = fig1 / gg2 +
-    plot_layout(heights = c(1,2))
+  # fig = fig1 / gg2 +
+  #   plot_layout(heights = c(1,2))
 
-  return(fig)
+  return(gg2)
 }
