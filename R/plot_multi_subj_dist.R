@@ -93,11 +93,13 @@ plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
             ggplot(aes(x = subj_ids, y = y, color = cond_ids)) +
             geom_boxplot() +
             scale_color_manual(values = c('#80c241', '#eb91bd')) +
-            theme_bw() +
+            theme_bw(base_size = 22) +
             ggtitle(title) +
             xlab(xlab) +
             ylab(ylab) +
-            theme(axis.text.x = axis,
+            theme(panel.grid.minor = element_blank(),
+                  axis.text = element_text(color = 'black'),
+                  axis.text.x = axis,
                   legend.position = 'none') +
             facet_wrap(.~cond_ids, scales = 'free')
   }else{
@@ -106,11 +108,13 @@ plot_multi_subj_dist <- function(count, meta, normalize_option = 'none',
               ggplot(aes(x = subj_ids, y = y, color = cond_ids)) +
               geom_boxplot() +
               scale_color_manual(values = c('#80c241', '#eb91bd')) +
-              theme_bw() +
+              theme_bw(base_size = 22) +
               ggtitle(title) +
               xlab(xlab) +
               ylab(ylab) +
-              theme(axis.text.x = axis,
+              theme(panel.grid.minor = element_blank(),
+                    axis.text = element_text(color = 'black'),
+                    axis.text.x = axis,
                     legend.position = 'none') +
               facet_wrap(.~cond_ids, scales = 'free') +
               ylim(y_range[1], y_range[2])
