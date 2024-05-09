@@ -50,7 +50,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
 
   stopifnot(all(colnames(count) == rownames(meta)))
 
-  if(normalize_option %in% c('pooling', 'clr')){
+  if(normalize_option %in% c('pooling', 'LogNormalize', 'clr')){
     message('Normalizing the input count matrix using ', normalize_option)
     tic(paste0('Normalization time'))
     count = normalize_data(count, meta, subject_name = subject_name, option = normalize_option)

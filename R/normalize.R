@@ -32,6 +32,11 @@ normalize_data <- function(count, meta, subject_name, option = 'none'){
     }
     size_factor = df$size_factor
     count.norm = t(t(count)/size_factor)
+  }else if(option=='LogNormalize'){
+    # LogNormalize from Seurat
+    rds = colSums(count)
+    med_rds = median(rds)
+    count.norm = log1p(t(t(count)/rds)*med_rds)
   }else if(option=='clr'){
     # clr function from Seurat
     clr_function <- function(x) {
