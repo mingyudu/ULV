@@ -177,7 +177,7 @@ run_DESeq_sc = function(count, meta, subject_name, cond_name,
       df$size_factor[df$subject==subj] = size_factor
     }
     size_factor = df$size_factor
-  }else{
+  }else if(normalize_option == 'LogNormalize'){
     rds = colSums(count)
     med_rds = median(rds)
     size_factor = rds/med_rds
