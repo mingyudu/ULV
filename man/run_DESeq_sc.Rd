@@ -11,6 +11,7 @@ run_DESeq_sc(
   cond_name,
   ctrl_cond,
   case_cond,
+  normalize_option = "pooling",
   numerical_covar = NULL,
   categorical_covar = NULL
 )
@@ -27,6 +28,9 @@ run_DESeq_sc(
 \item{ctrl_cond}{a character for the control condition name.}
 
 \item{case_cond}{a character for the case condition name.}
+
+\item{normalize_option}{normalization method to apply on the single-cell data.
+Set to 'pooling' as default.}
 
 \item{numerical_covar}{a vector of numerical covariate name to adjust.
 Set to NULL if there is no covariate adjustment.}

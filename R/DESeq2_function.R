@@ -132,6 +132,8 @@ run_DESeq_pseudobulk = function(count, meta, subject_name, cond_name,
 #' @param cond_name a character for the codition name in \code{meta}.
 #' @param ctrl_cond a character for the control condition name.
 #' @param case_cond a character for the case condition name.
+#' @param normalize_option normalization method to apply on the single-cell data.
+#'  Set to 'pooling' as default.
 #' @param numerical_covar a vector of numerical covariate name to adjust.
 #'  Set to NULL if there is no covariate adjustment.
 #' @param categorical_covar a vector of categorical covariate name to adjust.
@@ -143,7 +145,7 @@ run_DESeq_pseudobulk = function(count, meta, subject_name, cond_name,
 #'
 #' @examples
 run_DESeq_sc = function(count, meta, subject_name, cond_name,
-                        ctrl_cond, case_cond,
+                        ctrl_cond, case_cond, normalize_option = 'pooling',
                         numerical_covar = NULL, categorical_covar = NULL){
 
   meta[, cond_name] = factor(meta[, cond_name], levels = c(ctrl_cond, case_cond))
@@ -156,27 +158,30 @@ run_DESeq_sc = function(count, meta, subject_name, cond_name,
   }
 
   # obtain the size factor on a subject-by-subject basis
-  df = data.frame(cell_name = colnames(count),
-                  subject = meta[, subject_name])
-  rownames(df) = df$cell_name
+  if(normalize_option == 'pooling'){
+    df = data.frame(cell_name = colnames(count),
+                    subject = meta[, subject_name])
+    rownames(df) = df$cell_name
 
-  df$size_factor = NA
-  subject_list = unique(meta[, subject_name])
-  for (i in 1:length(subject_list)) {
-    subj = subject_list[i]
-    # print(subj)
-    dds = DESeqDataSetFromMatrix(count, colData = meta, design = ~1)
-    dds = dds[,colData(dds)[,subject_name]==subj]
-    # use scran normalization suggested by DESeq2 tutorial
-    # https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#recommendations-for-single-cell-analysis
-    dds = computeSumFactors(dds)
-    size_factor = sizeFactors(dds)
-    # cell_name = names(size_factor)
-    # print(all(cell_name == df$cell_name[df$subject==subj]))
-    size_factor = as.vector(size_factor)
-    df$size_factor[df$subject==subj] = size_factor
+    df$size_factor = NA
+    subject_list = unique(meta[, subject_name])
+    for (i in 1:length(subject_list)) {
+      subj = subject_list[i]
+      dds = DESeqDataSetFromMatrix(count, colData = meta, design = ~1)
+      dds = dds[,colData(dds)[,subject_name]==subj]
+      # use scran normalization suggested by DESeq2 tutorial
+      # https://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#recommendations-for-single-cell-analysis
+      dds = computeSumFactors(dds)
+      size_factor = sizeFactors(dds)
+      size_factor = as.vector(size_factor)
+      df$size_factor[df$subject==subj] = size_factor
+    }
+    size_factor = df$size_factor
+  }else{
+    rds = colSums(count)
+    med_rds = median(rds)
+    size_factor = rds/med_rds
   }
-  size_factor = df$size_factor
 
   # DESeq2
   if(is.null(c(numerical_covar, categorical_covar))){
