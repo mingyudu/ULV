@@ -37,6 +37,11 @@ normalize_data <- function(count, meta, subject_name, option = 'none'){
     rds = colSums(count)
     med_rds = median(rds)
     count.norm = log1p(t(t(count)/rds)*med_rds)
+  }else if(option=='RC'){
+    # LogNormalize from Seurat
+    rds = colSums(count)
+    med_rds = median(rds)
+    count.norm = t(t(count)/rds)*med_rds
   }else if(option=='clr'){
     # clr function from Seurat
     clr_function <- function(x) {

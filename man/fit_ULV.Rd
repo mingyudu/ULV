@@ -22,8 +22,8 @@ fit_ULV(
 
 \item{meta}{a data frame of meta information.}
 
-\item{normalize_option}{a character value to show the normalization method to
-apply to the count matrix.}
+\item{normalize_option}{either 'pooling', 'LogNormalize', 'RC', 'clr', or 'none'
+for the normalization method to apply to the count matrix.}
 
 \item{subject_name}{a character for subject name in \code{meta}.}
 

@@ -6,8 +6,8 @@
 #'
 #' @param count count matrix.
 #' @param meta a data frame of meta information.
-#' @param normalize_option a character value to show the normalization method to
-#'  apply to the count matrix.
+#' @param normalize_option either 'pooling', 'LogNormalize', 'RC', 'clr', or 'none'
+#'  for the normalization method to apply to the count matrix.
 #' @param subject_name a character for subject name in \code{meta}.
 #' @param cond_name a character for condition name in \code{meta}.
 #' @param ctrl_cond a character for control name.
@@ -50,7 +50,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
 
   stopifnot(all(colnames(count) == rownames(meta)))
 
-  if(normalize_option %in% c('pooling', 'LogNormalize', 'clr')){
+  if(normalize_option %in% c('pooling', 'LogNormalize', 'RC', 'clr')){
     message('Normalizing the input count matrix using ', normalize_option)
     tic(paste0('Normalization time'))
     count = normalize_data(count, meta, subject_name = subject_name, option = normalize_option)

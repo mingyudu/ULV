@@ -132,7 +132,7 @@ run_DESeq_pseudobulk = function(count, meta, subject_name, cond_name,
 #' @param cond_name a character for the codition name in \code{meta}.
 #' @param ctrl_cond a character for the control condition name.
 #' @param case_cond a character for the case condition name.
-#' @param normalize_option normalization method to apply on the single-cell data.
+#' @param normalize_option either 'pooling' or 'RC' for the normalization method to apply on the single-cell data.
 #'  Set to 'pooling' as default.
 #' @param numerical_covar a vector of numerical covariate name to adjust.
 #'  Set to NULL if there is no covariate adjustment.
@@ -177,7 +177,7 @@ run_DESeq_sc = function(count, meta, subject_name, cond_name,
       df$size_factor[df$subject==subj] = size_factor
     }
     size_factor = df$size_factor
-  }else if(normalize_option == 'LogNormalize'){
+  }else if(normalize_option == 'RC'){
     rds = colSums(count)
     med_rds = median(rds)
     size_factor = rds/med_rds

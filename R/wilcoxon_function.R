@@ -22,7 +22,7 @@ wilcox_subject <- function(count, meta, normalize_option = 'pooling',
   #---------------------------------
   # pre-processing
   #---------------------------------
-  if(normalize_option %in% c('pooling', 'LogNormalize', 'clr')){
+  if(normalize_option %in% c('pooling', 'LogNormalize', 'RC', 'clr')){
     message('Normalizing the input count matrix using ', normalize_option)
     count = normalize_data(count, meta, option = normalize_option)
   }else if (normalize_option == 'none'){
@@ -127,7 +127,7 @@ wilcox_cell <- function(count, meta, normalize_option = 'pooling',
   #---------------------------------
   # pre-processing
   #---------------------------------
-  if(normalize_option %in% c('pooling', 'LogNormalize', 'clr')){
+  if(normalize_option %in% c('pooling', 'LogNormalize', 'RC', 'clr')){
     message('Normalizing the input count matrix using ', normalize_option)
     count = normalize_data(count, meta, option = normalize_option)
   }else if (normalize_option == 'none'){

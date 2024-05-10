@@ -29,7 +29,7 @@ run_DESeq_sc(
 
 \item{case_cond}{a character for the case condition name.}
 
-\item{normalize_option}{normalization method to apply on the single-cell data.
+\item{normalize_option}{either 'pooling' or 'RC' for the normalization method to apply on the single-cell data.
 Set to 'pooling' as default.}
 
 \item{numerical_covar}{a vector of numerical covariate name to adjust.
