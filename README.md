@@ -12,7 +12,7 @@ You can install the current version of ULV from GitHub with:
 ```r
 if (!require("devtools", quietly = TRUE))
     install.packages("devtools")
-devtools::install_github("yu-zhaoxia/ULV")
+devtools::install_github("yu/ULV")
 ```
 
 ## Example
