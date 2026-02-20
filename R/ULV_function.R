@@ -92,7 +92,7 @@ fit_ULV <- function(count, meta, normalize_option='none',
     message('At least in one condition we only have one subject!')
     return(0)
   }
-  ind_fct = factor(subject, levels = c(ctrl_subjs, case_subjs))
+  ind_fct = factor(subject, levels = c(ctrl_subjs, case_subjs)) # FIRST ctrl NEXT case
 
   #--------------------------------------------------
   # check covariate information
@@ -119,14 +119,14 @@ fit_ULV <- function(count, meta, normalize_option='none',
     #   message('Finished model fitting for feature ', g, '/', ngene)
     # }
     y = as.numeric(count[g,])
-    y.split = split(y, ind_fct)
+    y.split = split(y, ind_fct) # FIRST control NEXT case when splitting data!
 
     #---------------------------------------------------------
     # comparison between case and control
     # use rank-base method to calculate probabilistic index
     #---------------------------------------------------------
 
-    d_mat=matrix(0, n1, n0)
+    d_mat=matrix(0, n1, n0) # ROW is case COLUMN is ctrl
     for (i in (n0+1):(n0+n1)) { # case
       for (j in 1:n0) { # ctrl
         d_mat[i-n0,j]=wilcox.test(unlist(y.split[i]), unlist(y.split[j]))$statistic/
